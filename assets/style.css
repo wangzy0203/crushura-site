@@ -1,0 +1,68 @@
+:root {
+  --brand: #1f4e79;
+  --ink: #1c1f23;
+  --muted: #5b6470;
+  --line: #e3e7ec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+}
+
+a { color: var(--brand); }
+
+.site-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header .brand {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tagline { color: var(--muted); margin: 4px 0 16px; }
+
+.site-nav a { margin-right: 20px; text-decoration: none; }
+
+.breadcrumb {
+  padding: 12px 32px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.breadcrumb .sep { margin: 0 8px; }
+
+main { padding: 16px 32px 48px; max-width: 1080px; }
+
+h1 { font-size: 32px; margin: 8px 0 16px; }
+
+.lead { font-size: 18px; color: var(--muted); }
+
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.product-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+
+.product-image img { max-width: 560px; width: 100%; }
+
+table { border-collapse: collapse; width: 100%; max-width: 640px; }
+
+th, td { border-bottom: 1px solid var(--line); padding: 10px 12px; text-align: left; }
+
+th { width: 40%; color: var(--muted); font-weight: 500; }
+
+.site-footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}

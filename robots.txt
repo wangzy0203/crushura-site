@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://crushura.com/sitemap.xml
