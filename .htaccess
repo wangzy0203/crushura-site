@@ -1,0 +1,5 @@
+# 由构建函数生成——不要手改，下一次发布会把它整个覆盖掉。
+# 规则来自后台的「重定向」面板。
+RedirectMatch 301 ^/crusher-parts/$ /crushing-machinery/
+RedirectMatch 301 ^/crusher-parts/jaw-crusher/$ /crushing-machinery/pe-jaw-crusher/
+RedirectMatch 301 ^/crusher-parts/jaw-crusher/jaw-plate-pe-600x900/$ /crushing-machinery/pe-jaw-crusher/jaw-plate-pe-jaw-crusher/
