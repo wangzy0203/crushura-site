@@ -163,6 +163,25 @@ p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
 .hero-fig svg{width:100%;height:auto}
 .hero-fig figcaption{margin-top:14px;font-size:13px;color:rgba(255,255,255,.6);max-width:42ch}
 
+/* 首页 hero：全幅产品拼贴背景（issue 21）。图是构建产物里的
+   `assets/hero-collage.jpg`（设计资产，不是内容——换图 = 换那一个文件再发布）。
+   遮罩从左上到右下渐浅：左侧压着文案，保证白字可读；右侧留出产品细节。 */
+.hero-photo{min-height:65vh;background:var(--navy-deep)}
+.hero-bg{position:absolute;inset:0;background:url(/assets/hero-collage.jpg) center/cover no-repeat}
+.hero-photo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,rgba(7,20,40,.94) 0%,rgba(7,20,40,.8) 42%,rgba(7,20,40,.34) 100%)}
+.hero-photo .hero-in{grid-template-columns:minmax(0,660px)}
+
+/* 首页：宫格/案例区收尾的那颗按钮 */
+.sec-foot{margin-top:40px}
+
+/* 首页：公司/工厂区块的两张图 */
+.factory-figs{margin:0;display:grid;gap:18px}
+.factory-figs img{display:block;width:100%;border:1px solid var(--line)}
+
+/* 首页：应用场景三格（`.parts-grid` 是四列，三张卡会空一格） */
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
 /* 数值带（只允许的那套公司数字） */
 .stat-band{border-bottom:1px solid var(--line);background:var(--white)}
 .stat-band-in{display:grid;grid-template-columns:repeat(6,1fr)}
@@ -443,6 +462,10 @@ footer{background:var(--navy-deep);color:#fff}
   .rail-card{flex-basis:78vw}
   .foot-in{grid-template-columns:1fr;gap:32px;padding:64px 24px 44px}
   .cta-in{flex-direction:column;align-items:flex-start}
+  /* 首页产品宫格：768 这一档折两列（`.parts-grid` 的 auto-fill 在 480–768
+     之间本来也常给两列，这里钉死，免得宽度卡在临界值时跳成一列） */
+  .parts-grid{grid-template-columns:repeat(2,1fr)}
+  .case-grid{grid-template-columns:1fr}
 }
 @media (max-width:480px){
   .wrap{padding-inline:20px}
