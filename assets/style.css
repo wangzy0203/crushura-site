@@ -155,7 +155,10 @@ p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
   background:linear-gradient(160deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;padding:150px 0 110px}
 .hero-mesh{position:absolute;inset:0;
   background-image:repeating-linear-gradient(45deg,transparent 0 42px,rgba(255,255,255,.05) 42px 43px),repeating-linear-gradient(-45deg,transparent 0 42px,rgba(255,255,255,.05) 42px 43px)}
-.hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center}
+/* `z-index:1` 不是可选项：首页 hero 的遮罩是 `.hero-photo::after`，它和这一层同为
+   `position` + `z-index:auto`，而伪元素在 DOM 里更靠后 → **遮罩画在文字上面**，
+   白字被压成暗色（22 号票量过：这里 computed 是 `auto`）。 */
+.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center}
 .hero .display{margin-bottom:24px}
 .hero .lead{color:rgba(255,255,255,.85);margin-bottom:38px}
 .hero-cta{display:flex;gap:16px;flex-wrap:wrap}
@@ -397,6 +400,17 @@ footer{background:var(--navy-deep);color:#fff}
 .fab-btn{display:flex;align-items:center;gap:9px;background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:11px 16px;transition:background .2s}
 .fab-btn:hover{background:var(--orange)}
 .fab-btn .ic{width:18px;height:18px}
+/* 悬浮联系条只在**内容栏右边真的放得下**时出现。定版稿里它一直显示、宽 121px，
+   而 1200 的内容栏 + 两侧 24 留白在视口 1280 时右缘只剩 64px——于是它盖住内容：
+   1280 宽盖 79px、1366 宽盖 36px（22 号票量过，见票里的数）。
+   窄了就收成图标（文字藏起来，`aria-label` 还在，读屏不受影响），再窄整个收起；
+   ≤1024 本来就是 `.tabbar` 接手。改 `.wrap` 的 max-width 要跟着改这两个阈值。 */
+@media (max-width:1279px){.fab{display:none}}
+@media (min-width:1280px) and (max-width:1469px){
+  .fab{right:16px}
+  .fab-btn{padding:11px}
+  .fab-btn span{display:none}
+}
 .tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:100;background:var(--white);border-top:1px solid var(--line);grid-template-columns:repeat(3,1fr)}
 .tabbar a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 12px;font-size:11px;font-weight:600;color:var(--navy)}
 .tabbar .ic{width:20px;height:20px}
@@ -404,6 +418,10 @@ footer{background:var(--navy-deep);color:#fff}
 #to-top{position:fixed;right:22px;bottom:28px;z-index:95;width:46px;height:46px;display:grid;place-items:center;
   background:var(--white);color:var(--navy);border:1px solid var(--line);box-shadow:0 6px 20px rgba(7,50,113,.15)}
 #to-top:hover{background:var(--navy);color:#fff}
+/* `[hidden]` 只有 UA 样式 `display:none`，挡不住上面那条 `display:grid`（作者样式优先），
+   于是 JS 设的 `hidden` 完全不起作用——页顶就挂着一个「回到顶部」，手机上它正好压在
+   hero 的按钮上（22 号票）。 */
+#to-top[hidden]{display:none}
 
 /* 未找到（hash 路由兜底） */
 .not-found{padding:80px 0;text-align:left}
@@ -436,7 +454,6 @@ footer{background:var(--navy-deep);color:#fff}
   .brick:nth-child(even){margin-top:0}
   .masonry{columns:2}
   .foot-in{grid-template-columns:1fr 1fr;gap:36px}
-  .fab{display:none}
   .tabbar{display:grid}
   body{padding-bottom:64px}
   #to-top{bottom:80px}
