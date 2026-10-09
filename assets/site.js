@@ -5,13 +5,15 @@
    注入页头页脚）一条都不在产物里：内容和链接全部由构建函数渲染成 HTML，
    用户故事 46 要的就是「爬虫不用执行 JS 就能索引全部内容」。
 
-   这里只做四件事，**每一件都是「没有它页面照样读得到、链接照样点得动」**：
+   这里只做五件事，**每一件都是「没有它页面照样读得到、链接照样点得动」**：
 
    1. 页头滚动变色（.scrolled）—— 不做的话，首页往下滚过深色首屏之后
       透明页头会在白底上显示白字
    2. 移动端抽屉开合 —— 不做的话手机上点不开菜单（页脚仍有全部入口）
    3. 回到顶部
    4. 表单前端校验 —— 不做的话表单照样提交，只是要等服务端往返才知道填错了
+   5. 首页 hero 的 banner 轮播 —— 不做的话第一张照样亮着（`.is-active` 是模板
+      直接渲染上去的），只是不切图
 
    入场动效（.reveal）也是在这里加的：CSS 里 .reveal{opacity:0} 只对带这个类的
    元素生效，而类由这里加——**所以 JS 没跑起来时内容是直接可见的，不会白屏**。
@@ -122,8 +124,38 @@
     });
   }
 
+  /* ── 首页 hero 的 banner 轮播 ───────────────────────── */
+  var ROTATE_MS = 6000;
+  function initHeroRotate() {
+    var slides = $$(".hero-bg");
+    // 只有一张就什么都不做；开了「减少动效」也不切（那是使用者的明确偏好）
+    if (slides.length < 2) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var hero = $("#home"), i = 0, timer = null;
+    function show(n) {
+      slides[i].classList.remove("is-active");
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add("is-active");
+    }
+    function start() {
+      if (!timer) timer = window.setInterval(function () { show(i + 1); }, ROTATE_MS);
+    }
+    function stop() {
+      if (timer) { window.clearInterval(timer); timer = null; }
+    }
+    start();
+    // 标签页切到后台就停：没人看，白跑一遍还费电
+    document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+    // 鼠标停在首屏上不切——他正在看那一张
+    if (hero) {
+      hero.addEventListener("mouseenter", stop);
+      hero.addEventListener("mouseleave", start);
+    }
+  }
+
   initScrollChrome();
   initDrawer();
   initReveal();
   initForms();
+  initHeroRotate();
 })();

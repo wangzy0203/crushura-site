@@ -8,6 +8,19 @@
    逐字搬过来，只改了两处（都在下面标了「改」）。
    ============================================================ */
 
+/* ── 字体（23 号票） ──────────────────────────────────────────
+   Archivo：工业感的美国哥特系无衬线，可变字重 100–900，latin 子集 34KB。
+   **自托管**——`/assets/archivo-var.woff2` 随产物发布，不走 Google Fonts CDN
+   （产物里一条外链都不能有，那条测试扫的就是这种地方）。
+   系统字体只作兜底：字体文件没下来时页面照样完整，只是少了那点性格。 */
+@font-face{
+  font-family:"Archivo";
+  src:url(/assets/archivo-var.woff2) format("woff2");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+
 :root{
   --white:#ffffff;
   --bg:#fafaf9;
@@ -25,7 +38,11 @@
   --muted:#5a6270;
   --line:#e3e0d9;
   --line-navy:rgba(255,255,255,.16);
-  --font:"Segoe UI","Helvetica Neue",Helvetica,Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+  --font:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+  /* 层次（23 号票）：定版稿是纯平面 + 1px 细线。加两层**克制**的阴影把卡片托起来，
+     暗底那一档只用于悬停。细线还在，阴影只是补一层前后关系。 */
+  --shadow-1:0 1px 2px rgba(12,35,64,.05),0 8px 22px rgba(12,35,64,.06);
+  --shadow-2:0 2px 6px rgba(12,35,64,.07),0 20px 44px rgba(12,35,64,.13);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -43,28 +60,38 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .skip-link{position:absolute;left:-999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;z-index:200;font-size:14px}
 .skip-link:focus{left:8px;top:8px}
 
-/* ── 字号 6 档：76 / 54 / 34 / 22 / 16 / 12 ───────────────── */
-.display{font-size:clamp(44px,5.4vw,76px);line-height:1.06;font-weight:700;letter-spacing:-.01em}
-.page-title{font-size:clamp(36px,4vw,54px);line-height:1.1;font-weight:700;letter-spacing:-.01em}
-h2,.h2{font-size:clamp(28px,2.6vw,34px);line-height:1.2;font-weight:700}
-h3,.h3{font-size:22px;line-height:1.3;font-weight:600}
-.lead{font-size:22px;line-height:1.55;font-weight:400;max-width:32em}
-.meta{font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
-.kicker{font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--orange);margin-bottom:14px}
+/* ── 字号 6 档：74 / 52 / 34 / 22 / 16 / 12 ───────────────── */
+/* 层级靠**字距和字重**拉开，不靠换字体：Archivo 在大字号下要收得更紧
+   （-.028em），小字号收太多会糊在一起。 */
+.display{font-size:clamp(42px,5.2vw,74px);line-height:1.04;font-weight:700;letter-spacing:-.028em}
+.page-title{font-size:clamp(34px,3.8vw,52px);line-height:1.08;font-weight:700;letter-spacing:-.024em}
+h2,.h2{font-size:clamp(27px,2.6vw,34px);line-height:1.18;font-weight:700;letter-spacing:-.018em}
+h3,.h3{font-size:22px;line-height:1.3;font-weight:600;letter-spacing:-.012em}
+.lead{font-size:21px;line-height:1.55;font-weight:400;max-width:32em}
+.meta{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+/* 小标题前面一小段橙色横线：编辑感的分隔，也让每一节有同一个起点。
+   用 flex 而不是绝对定位——横线的高度随字号走，不用猜 em 值。 */
+.kicker{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:.2em;color:var(--orange);margin-bottom:16px}
+.kicker::before{content:"";width:16px;height:2px;background:currentColor;flex:none}
 .sec-navy .kicker,.hero .kicker,.page-hero .kicker{color:var(--orange-deco)}
 p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
 .sec-intro{color:var(--muted);margin-top:14px;max-width:40em}
+/* 双色标题：关键词走强调色。**深底和浅底用的不是同一个橙**——
+   浅底上必须用文字级的 `--orange`，亮橙在浅底上对比度不够（它是装饰色）。 */
+.hl{color:var(--orange)}
+.hero .hl,.sec-navy .hl,.page-hero .hl{color:var(--orange-deco)}
 
-/* ── 按钮（方角、纯色、无渐变） ─────────────────────────────── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 26px;
-  font-size:15px;font-weight:600;letter-spacing:.02em;border:1px solid transparent;transition:background .2s,border-color .2s,color .2s}
+/* ── 按钮（方角、纯色、无渐变；悬停上浮一档） ───────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 28px;
+  font-size:15px;font-weight:600;letter-spacing:.01em;border:1px solid transparent;
+  transition:background .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s}
 .btn-block{display:flex;width:100%}
 .btn-solid{background:var(--orange);color:#fff}
-.btn-solid:hover{background:#a84508}
-.btn-ghost{border-color:rgba(255,255,255,.65);color:#fff}
-.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+.btn-solid:hover{background:#a84508;transform:translateY(-2px);box-shadow:0 12px 24px rgba(194,84,16,.3)}
+.btn-ghost{border-color:rgba(255,255,255,.6);color:#fff}
+.btn-ghost:hover{background:rgba(255,255,255,.12);border-color:#fff;transform:translateY(-2px)}
 .btn-line{border-color:var(--navy);color:var(--navy)}
-.btn-line:hover{background:var(--navy);color:#fff}
+.btn-line:hover{background:var(--navy);color:#fff;transform:translateY(-2px);box-shadow:var(--shadow-1)}
 
 /* ── 页头（吸顶 + 滚动变色） ──────────────────────────────── */
 #site-header{position:fixed;inset:0 0 auto;z-index:100;background:transparent;color:#fff;transition:background .25s,box-shadow .25s}
@@ -140,7 +167,7 @@ p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
 .ph::after{content:"";position:absolute;right:0;top:0;width:34%;height:2px;background:var(--orange-deco)}
 .ph-label{position:absolute;left:0;bottom:0;max-width:100%;background:var(--white);color:var(--navy);
   font-size:12px;font-weight:600;letter-spacing:.04em;padding:7px 12px;border-top:2px solid var(--orange-deco)}
-.ar-43{aspect-ratio:4/3}.ar-32{aspect-ratio:3/2}.ar-169{aspect-ratio:16/9}
+.ar-43{position:relative;aspect-ratio:4/3}.ar-32{aspect-ratio:3/2}.ar-169{aspect-ratio:16/9}
 .ar-43 img,.ar-32 img,.ar-169 img{width:100%;height:100%;object-fit:cover}
 
 /* ── 版块节奏（相邻版块留白 ≥100px） ─────────────────────── */
@@ -166,32 +193,69 @@ p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
 .hero-fig svg{width:100%;height:auto}
 .hero-fig figcaption{margin-top:14px;font-size:13px;color:rgba(255,255,255,.6);max-width:42ch}
 
-/* 首页 hero：全幅产品拼贴背景（issue 21）。图是构建产物里的
-   `assets/hero-collage.jpg`（设计资产，不是内容——换图 = 换那一个文件再发布）。
-   遮罩从左上到右下渐浅：左侧压着文案，保证白字可读；右侧留出产品细节。 */
-.hero-photo{min-height:65vh;background:var(--navy-deep)}
-.hero-bg{position:absolute;inset:0;background:url(/assets/hero-collage.jpg) center/cover no-repeat}
+/* ── 首页 hero：全屏轮播 banner（24 号票） ────────────────────
+   图是设计稿（`templates/assets/banner-*`，加图不用改代码）。**满屏**：
+   `min-height:100vh` + `cover`，任何分辨率都铺满；手机上用 `svh`，
+   免得地址栏一收一放首屏跟着跳。
+   文案只留底部一条（按钮 + 实力带）——banner 里已经印着品牌名和标语了。 */
+.hero-photo{min-height:100vh;display:flex;align-items:flex-end;background:var(--navy-deep);padding:170px 0 64px}
+@supports (height:100svh){.hero-photo{min-height:100svh}}
+.hero-bgs{position:absolute;inset:0;overflow:hidden}
+/* 交叉淡入：一层一张，`cover` 保证铺满且不变形。
+   `object-position` 在手机上偏左——这张 banner 的品牌名和标语在左侧，
+   居中裁切正好把它们切掉（字放在左边的设计稿都有这个后果）。 */
+.hero-bg{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+.hero-bg.is-active{opacity:1}
+.hero-bg picture{display:block;width:100%;height:100%}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center}
+@media (prefers-reduced-motion:reduce){.hero-bg{transition:none}}
+/* 遮罩只做两件事：顶部压暗让白色页头读得清、底部压深给按钮和实力带托底。
+   **中间不动**——banner 是设计稿，压一层重的会把它自己印的字也糊掉。 */
 .hero-photo::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(100deg,rgba(7,20,40,.94) 0%,rgba(7,20,40,.8) 42%,rgba(7,20,40,.34) 100%)}
-.hero-photo .hero-in{grid-template-columns:minmax(0,660px)}
+  background:
+    linear-gradient(to top,rgba(7,20,40,.9) 0%,rgba(7,20,40,.5) 18%,rgba(7,20,40,0) 46%),
+    linear-gradient(to bottom,rgba(7,20,40,.5) 0%,rgba(7,20,40,0) 22%)}
+.hero-photo .hero-in{grid-template-columns:minmax(0,760px)}
+
+/* 首页 hero 文案下面那条「实力带」：买家 3 秒内扫的就是这几个数。
+   数字**全部来自站上已经写过的那一套**（首页/关于页/页脚共用同一组），一个都不新增。 */
+.trust{display:flex;flex-wrap:wrap;gap:10px 32px;margin-top:36px;padding-top:22px;border-top:1px solid rgba(255,255,255,.22)}
+.trust li{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:rgba(255,255,255,.84)}
+.trust li::before{content:"";width:6px;height:6px;background:var(--orange-deco);flex:none}
 
 /* 首页：宫格/案例区收尾的那颗按钮 */
 .sec-foot{margin-top:40px}
 
-/* 首页：公司/工厂区块的两张图 */
-.factory-figs{margin:0;display:grid;gap:18px}
-.factory-figs img{display:block;width:100%;border:1px solid var(--line)}
+/* ── 首页「制造实力」带（23 号票） ────────────────────────────
+   三样东西一起回答「你是不是真工厂」：航拍大图（规模）、五道工序（能力）、
+   那套公司数字（资历）。参考站里最像样的两家都把真实生产现场放在最能看见的位置。 */
+.mfg{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:56px;align-items:start}
+.mfg-figs{display:grid;gap:24px}
+.mfg-fig{margin:0;position:relative;box-shadow:var(--shadow-2)}
+/* 航拍原片偏「园区照」：降饱和压住红屋顶和大片绿化，让它跟品牌色是一家人。
+   这一步是**画面处理**，不是滤镜花活——不压的话整块又红又绿，跟海军蓝打架。 */
+.mfg-fig img{display:block;width:100%;height:auto;filter:saturate(.45) contrast(1.06) brightness(.96)}
+.mfg-cap{position:absolute;left:0;bottom:0;background:var(--navy);color:#fff;
+  font-size:12px;font-weight:600;letter-spacing:.08em;padding:10px 16px;border-top:2px solid var(--orange-deco)}
+.steps{margin-top:34px}
+.steps li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:start;padding:16px 0;border-top:1px solid rgba(255,255,255,.16)}
+.steps li:last-child{border-bottom:1px solid rgba(255,255,255,.16)}
+.step-ic{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.28);color:var(--orange-deco)}
+.step-ic .ic{width:20px;height:20px}
+.steps h3{font-size:16px;font-weight:600;color:#fff;letter-spacing:0}
+.steps h3 span{color:var(--orange-deco);font-size:12px;font-weight:700;letter-spacing:.14em;margin-right:10px;vertical-align:1px}
+.steps p{font-size:14px;color:rgba(255,255,255,.72);margin-top:4px;max-width:52ch}
 
 /* 首页：应用场景三格（`.parts-grid` 是四列，三张卡会空一格） */
 .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
 
-/* 数值带（只允许的那套公司数字） */
-.stat-band{border-bottom:1px solid var(--line);background:var(--white)}
-.stat-band-in{display:grid;grid-template-columns:repeat(6,1fr)}
-.stat{padding:36px 22px;border-left:1px solid var(--line)}
-.stat:first-child{border-left:0}
-.stat-num{font-size:34px;font-weight:700;color:var(--navy);line-height:1.1;white-space:nowrap}
-.stat-lab{font-size:13px;color:var(--muted);margin-top:6px}
+/* 数值带（只允许的那套公司数字）。23 号票起它并进了「制造实力」带，
+   所以是深底白字——`.mfg` 前缀让这几条压过 ≤1024 断点里那几条通用 `.stat` 规则。 */
+.stat-band-in{display:grid;grid-template-columns:repeat(6,1fr);margin-top:68px;padding-top:8px;border-top:1px solid rgba(255,255,255,.16)}
+.stat{padding:30px 20px;border-left:1px solid rgba(255,255,255,.14)}
+.stat:first-child{border-left:0;padding-left:0}
+.stat-num{font-size:33px;font-weight:700;color:#fff;line-height:1.05;white-space:nowrap;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat-lab{font-size:12.5px;color:rgba(255,255,255,.62);margin-top:8px}
 
 /* 首页：分类 hairline 清单 */
 .line-list{border-top:1px solid var(--line)}
@@ -246,11 +310,23 @@ p{max-width:70ch}                 /* 正文行宽 ≤75 字符 */
 
 /* 零件网格（1~8 个都优雅：auto-fill） */
 .parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:24px}
-.part-card{border:1px solid var(--line);background:var(--white);display:block;transition:border-color .2s}
-.part-card:hover{border-color:var(--navy)}
-.part-body{padding:16px 18px 18px}
+.part-card{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--line);background:var(--white);
+  transition:border-color .2s,transform .25s,box-shadow .25s}
+/* 悬停：从左边长出一条橙线 + 整卡上浮。卡片整张是链接，反馈要一眼看得见。 */
+.part-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--orange-deco);
+  transform:scaleX(0);transform-origin:left;transition:transform .3s;z-index:2}
+.part-card:hover{border-color:var(--navy);transform:translateY(-4px);box-shadow:var(--shadow-2)}
+.part-card:hover::before{transform:scaleX(1)}
+/* 图片盒：**固定比例**，`contain` 让零件整个露出来（渲染图都拍在白底上，裁切会把件截掉）。
+   23 号票之前这里没有盒子，图按原始比例自己撑开——同一行里卡片的名字高低不齐。 */
+.part-fig{aspect-ratio:4/3;display:grid;place-items:center;padding:12px;overflow:hidden}
+.part-fig img{width:auto;height:auto;max-width:100%;max-height:100%;transition:transform .45s}
+.part-card:hover .part-fig img{transform:scale(1.06)}
+.part-fig .ph{width:100%;height:100%}
+.part-body{padding:16px 18px 20px;border-top:1px solid var(--line);margin-top:auto}
 .part-body h3{font-size:17px}
-.part-body .meta{margin-top:6px;color:var(--muted);letter-spacing:.08em}
+.part-body .meta{margin-top:7px;color:var(--muted);letter-spacing:.1em}
 
 /* ── 分页（05 号票新加，定版稿里没有这一块）──────────────── */
 /* 定版稿只有列表页，而它的列表是 data.js 里那几条假数据，永远不需要翻页。
@@ -441,9 +517,11 @@ footer{background:var(--navy-deep);color:#fff}
   #nav-toggle{display:block}
   .hero-in{grid-template-columns:1fr;gap:44px}
   .hero-fig{max-width:460px}
+  /* 制造实力带：图在上、工序在下 */
+  .mfg{grid-template-columns:1fr;gap:44px}
   .stat-band-in{grid-template-columns:repeat(3,1fr)}
   .stat:nth-child(4){border-left:0}
-  .stat{border-top:1px solid var(--line)}
+  .stat{border-top:1px solid rgba(255,255,255,.14)}
   .stat:nth-child(-n+3){border-top:0}
   .cat-tile,.cat-tile.wide{grid-column:span 6}
   .pd-top,.about-split,.contact-in{grid-template-columns:1fr;gap:44px}
@@ -460,11 +538,14 @@ footer{background:var(--navy-deep);color:#fff}
 }
 @media (max-width:768px){
   .sec{padding:88px 0}
-  .hero{padding:130px 0 88px;min-height:0}
+  /* 手机上底部固定栏占掉 64px，首屏那条行动带要压在它上面，底边就多留 20px。
+     **`min-height` 不再清零**：使用者要求任何分辨率都占满屏，手机也一样。 */
+  .hero{padding:120px 0 92px}
+  .trust{margin-top:26px;padding-top:18px;gap:8px 24px}
   .page-hero{padding:140px 0 64px}
   .stat-band-in{grid-template-columns:repeat(2,1fr)}
   .stat:nth-child(odd){border-left:0}
-  .stat:nth-child(-n+3){border-top:1px solid var(--line)}
+  .stat:nth-child(-n+3){border-top:1px solid rgba(255,255,255,.14)}
   .stat:nth-child(-n+2){border-top:0}
   .cat-tile,.cat-tile.wide{grid-column:span 12}
   .brick{grid-column:span 6}
